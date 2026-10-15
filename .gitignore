@@ -2,7 +2,7 @@ node_modules/
 *.pptx
 *.pdf
 slide-*.jpg
-render/
+render*/
 research/
 .DS_Store
 *.tgz

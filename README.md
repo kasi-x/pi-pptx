@@ -2,7 +2,7 @@
 
 An original, MIT-licensed **PPTX skill** for coding agents that speak the [Agent Skills](https://agentskills.io/specification) convention — built and verified for [pi](https://github.com/badlogic/pi-mono) and OMP, and usable by Claude Code via a symlink.
 
-It creates decks with **pptxgenjs**, edits existing decks/templates at the **OOXML** level, renders slides to images for **visual QA**, and ships **genre playbooks** (consulting / academic / product / internal / training) with sources.
+It creates decks with **pptxgenjs**, edits existing decks/templates at the **OOXML** level, **lints and renders** finished decks for QA, and ships **genre playbooks** (consulting / academic / product / internal) plus a **design system** and **tested chart recipes**, all with sources.
 
 > Independent implementation. Inspired by publicly documented workflows and by Anthropic's source-available `pptx` skill (reference use only — no text or code from it is reused). Not affiliated with Anthropic.
 
@@ -51,20 +51,28 @@ skills/pptx/
 ├── SKILL.md                     routing + guardrails
 ├── references/
 │   ├── pptxgenjs.md             API guide + verified gotchas
-│   ├── ooxml-workflow.md        edit/template workflow
+│   ├── charts.md                chart chooser + tested recipes + option tables
+│   ├── design-system.md         palette / typography / spacing / layout patterns
+│   ├── ooxml-workflow.md        edit + template-fill workflow
+│   ├── qa.md                    QA playbook, thresholds, visual-QA subagent prompt
 │   └── deck-types.md            consulting / academic / product / internal playbooks
 ├── scripts/
 │   ├── unpack.sh / pack.sh      zip round-trip for OOXML edits
 │   ├── dup_slide.py             duplicate a slide with full bookkeeping
 │   ├── render.sh                deck → PDF → slide JPEGs
-│   └── inspect_deck.py          open check + structure/text summary
-└── examples/deck.js             starter generator (4 slides, chart, table, notes)
+│   ├── outline_to_pptx.js       outline JSON → deck (deterministic, 7 slide types)
+│   ├── inspect_deck.py          open check + structure/text summary
+│   └── lint_deck.py             geometry/typography linter (margins, overlaps, fonts, overflow)
+└── examples/
+    ├── deck.js                  starter generator (4 slides, chart, table, notes)
+    ├── master-deck.js           branded master + placeholders + sections
+    └── outline.sample.json      outline JSON consumed by scripts/outline_to_pptx.js
 ```
 
 ## Verify
 
 ```bash
-npm test                                    # generates example-deck.pptx + inspects it
+npm test                                    # generates example-deck.pptx, inspects + lints it
 bash skills/pptx/scripts/render.sh example-deck.pptx   # then LOOK at the images
 ```
 

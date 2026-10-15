@@ -11,11 +11,13 @@ A `.pptx` is a zip archive of XML parts. Every task below is either "emit one wi
 
 | Task | Approach |
 |---|---|
-| Create a new deck | `pptxgenjs` script — how-to in `references/pptxgenjs.md`, starter in `examples/deck.js` |
+| Create a new deck | `pptxgenjs` script (`references/pptxgenjs.md`; starters: `examples/deck.js`, `examples/master-deck.js`) or outline JSON → `scripts/outline_to_pptx.js` |
 | Edit / fill an existing deck or template | unpack → edit slides + bookkeeping → repack — `references/ooxml-workflow.md` |
 | Read content | `markitdown deck.pptx`, or `scripts/inspect_deck.py deck.pptx` |
-| Visual QA | `scripts/render.sh deck.pptx`, then look at every image |
-| Choose structure & style | `references/deck-types.md` (consulting / academic / product / internal / training) |
+| Chart design & recipes | `references/charts.md` (chooser, tested recipes, option tables) |
+| Palette / type / layout system | `references/design-system.md` |
+| Full QA pass | `references/qa.md` + `scripts/lint_deck.py` + `scripts/render.sh` |
+| Genre playbooks | `references/deck-types.md` (consulting / academic / product / internal / training) |
 
 Paths are relative to **this skill's directory** (the harness prints it when the skill loads; `scripts/` and `references/` live next to this file). Load only the reference you need.
 
@@ -33,7 +35,7 @@ If `require('pptxgenjs')` fails: `npm install pptxgenjs` in the working project 
 
 1. Pick the genre and outline first: `references/deck-types.md`.
 2. Fix the design system **before** writing slides: one dominant color + support + one accent; white or brand background; titles 36–44pt, section heads 20–24pt, body 14–16pt, captions 10–12pt.
-3. Write the generator — copy `examples/deck.js` as the skeleton.
+3. Write the generator — copy `examples/deck.js` as the skeleton. If the content is already structured (or another agent produces it as data), write an outline JSON instead (schema: `examples/outline.sample.json`) and render deterministically: `node scripts/outline_to_pptx.js outline.json out.pptx`.
 4. Generate → QA → fix loop (see QA below).
 
 Top footguns (full list, verified notes and chart recipes in `references/pptxgenjs.md`):
@@ -70,6 +72,8 @@ Rules that prevent most corruption and rework:
 
 ## QA (required before delivering)
 
+Full playbook, numeric thresholds and the visual-QA subagent prompt: `references/qa.md`.
+
 1. `scripts/render.sh out.pptx` → look at **every** image. Check in this order: text overflow/clipping (most common), overlaps, gaps < 0.3″, margins < 0.5″, low contrast, misalignment, leftover placeholder text.
 2. Deterministic overflow spot-check: `pdftotext -bbox-layout <outdir>/out.pdf -` and scan for word boxes crossing the page edges (page box minus ~36 pt ≈ 0.5″).
 3. `markitdown out.pptx | grep -iE "lorem|ipsum|TODO|xxx|\[insert"` — template leftovers.
@@ -80,7 +84,7 @@ Rules that prevent most corruption and rework:
 | Need | For | Install |
 |---|---|---|
 | node ≥ 18 + `pptxgenjs` ^4 | deck creation | `npm install pptxgenjs` in the project |
-| python3 + `python-pptx` | `scripts/inspect_deck.py` | `pip install python-pptx` (or a tool runner: `uv tool`) |
+| python3 + `python-pptx` | `scripts/inspect_deck.py`, `scripts/lint_deck.py` | `pip install python-pptx` (or a tool runner: `uv tool`) |
 | `markitdown[pptx]` | text dumps | `uv tool install "markitdown[pptx]"` |
 | LibreOffice + poppler (`soffice`, `pdftoppm`) | `scripts/render.sh` | distro packages: `libreoffice poppler-utils` |
 
@@ -90,4 +94,5 @@ Rules that prevent most corruption and rework:
 - Body text ≥ 14pt and high contrast — the back row must be able to read it.
 - Give every slide a visual element; vary the layout between slides instead of repeating one template.
 - No decorative header/footer bars, title underlines, or edge stripes — use whitespace, tints, shadows, and images to structure content.
+- Keep the generating script next to the deck and regenerate deterministically — never hand-patch a rendered deck.
 - Japanese decks: use fonts that exist on the target machine (`BIZ UDGothic`, `Noto Sans JP`, `Yu Gothic`); the LibreOffice preview substitutes fonts, so leave ~10% width slack on JP text boxes.

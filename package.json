@@ -1,6 +1,6 @@
 {
   "name": "pi-pptx",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Original PPTX skill for pi and OMP coding agents: create decks with pptxgenjs, edit OOXML, render/QA slides, plus consulting/academic/product deck playbooks.",
   "license": "MIT",
   "author": "Kenji Iida (kasi-x)",
@@ -28,7 +28,7 @@
     "pptxgenjs": "^4.0.1"
   },
   "scripts": {
-    "test": "node skills/pptx/examples/deck.js && python3 skills/pptx/scripts/inspect_deck.py example-deck.pptx"
+    "test": "node skills/pptx/examples/deck.js && python3 skills/pptx/scripts/inspect_deck.py example-deck.pptx && python3 skills/pptx/scripts/lint_deck.py example-deck.pptx"
   },
   "engines": {
     "node": ">=18"

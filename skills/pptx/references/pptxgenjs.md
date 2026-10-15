@@ -60,6 +60,7 @@ s.addImage({ data: "image/png;base64," + buf.toString("base64"), x: 0.7, y: 1.2,
 - Local path or `data:` URI (the `image/png;base64,` / `image/jpeg;base64,` prefix is required); `sizing` controls crop vs fit.
 - Keep image paths and extensions **lowercase** — a `.PNG` relationship target breaks case-sensitive readers and triggers PowerPoint's repair dialog.
 - Icons: there is no SVG/icon support — rasterize icons yourself (e.g. render an icon to PNG ≥ 256 px) and insert as an image, or draw simple icons from shapes.
+- Alt text: the `altText` option works on `addImage`/`addChart` (**verified** → `descr=` in the XML); `addShape`/`addText` ignore it, and a missing or empty `altText` falls back to the file path — see `design-system.md` §6.
 - Prefer real image files in the project; base64 keeps a single-file workflow but bloats the JS.
 
 ## Tables
@@ -97,7 +98,7 @@ s.addChart(p.ChartType.line, [{ name: "requests", labels: ["Q1","Q2","Q3","Q4"],
 - Defaults render bare (no title, no labels, dated palette) — always set title/labels/colors explicitly, or turn them off deliberately.
 - Data labels on **stacked** bar/column charts: `dataLabelPosition` must be `"ctr"`, `"inEnd"`, or `"inBase"`. `"outEnd"` is illegal for stacked axes in the OOXML schema — pptxgenjs writes it anyway (**verified**: `dLblPos val="outEnd"` lands in `chart1.xml` without error), and PowerPoint then refuses the chart. Nothing local catches this — check your chart types.
 - Secondary-axis options (`valAxes`/`catAxes`, two entries each) belong to **combination charts only**. On a single-series chart they pass `addChart()` and then **throw during `writeFile()`** (**verified**) — chart mistakes can surface at serialization time, not when you build the chart.
-- A single data series takes a **single-element** `chartColors` array; a multi-color array on a one-series bar chart mis-colors it and misreads the legend.
+- A single data series takes a **single-element** `chartColors` array — a multi-color array is applied as per-category `<c:dPt>` colors with a one-entry legend, which usually reads as wrong (verified). Reserve per-point colors for charts where each category genuinely has its own color (pie/doughnut).
 - Chart data lives in an embedded workbook inside the chart part; regenerate the slide rather than hand-editing that XML.
 
 ## Notes, sections, masters

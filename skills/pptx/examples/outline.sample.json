@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "title": "Quarterly review",
+    "subtitle": "Growth held; the next constraint is capacity",
+    "author": "Platform team",
+    "date": "2026-10"
+  },
+  "palette": "ocean",
+  "slides": [
+    { "type": "title" },
+    {
+      "type": "bullets",
+      "title": "Three things to take away",
+      "bullets": [
+        "Revenue grew 18% with flat headcount",
+        "Review cycle time fell 2.4x after the automation rollout",
+        "Q4 volume crosses planned capacity — a decision is needed this month"
+      ],
+      "notes": "State the three takeaways, then hand over to the numbers slide."
+    },
+    {
+      "type": "stats",
+      "title": "The quarter in numbers",
+      "stats": [
+        { "value": "+18%", "label": "revenue growth vs last quarter" },
+        { "value": "2.4x", "label": "faster review cycle" },
+        { "value": "31", "label": "releases shipped" }
+      ]
+    },
+    {
+      "type": "chart",
+      "title": "Volume keeps climbing",
+      "takeaway": "Requests grew 3.4x across the year. Q4 is the first quarter above planned capacity.",
+      "chart": {
+        "kind": "line",
+        "series": [{ "name": "requests", "labels": ["Q1", "Q2", "Q3", "Q4"], "values": [120, 180, 260, 410] }]
+      },
+      "notes": "Emphasize the capacity inflection at Q4, not the raw growth."
+    },
+    { "type": "section", "title": "Plan" },
+    {
+      "type": "table",
+      "title": "Decisions and owners",
+      "table": {
+        "headers": ["Workstream", "Owner", "Done by"],
+        "rows": [
+          ["Capacity upgrade", "Platform", "Week 3"],
+          ["Review automation", "Tooling", "Week 5"],
+          ["Pricing experiment", "Growth", "Week 7"]
+        ]
+      }
+    },
+    {
+      "type": "closing",
+      "title": "Decision needed this month",
+      "subtitle": "Capacity upgrade — decision and budget by week 3"
+    }
+  ]
+}

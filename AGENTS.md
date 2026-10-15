@@ -7,9 +7,10 @@ Original, MIT-licensed PPTX skill (Agent Skills format) for pi and OMP, packaged
 ## Commands
 
 ```bash
-npm test                                            # generate example deck + inspect it
+npm test                                            # generate example deck, inspect + lint it
 bash skills/pptx/scripts/render.sh example-deck.pptx   # visual QA renders (then LOOK at them)
 python3 skills/pptx/scripts/dup_slide.py --help     # slide duplication
+python3 skills/pptx/scripts/lint_deck.py --help     # geometry/typography lint
 pi install ~/dev/pi-pptx                            # (re)register with pi
 ```
 
@@ -18,9 +19,9 @@ Publish (author's call, not automated): `gh repo create kasi-x/pi-pptx --public 
 ## Layout
 
 - `skills/pptx/SKILL.md` — routing + guardrails (keep ≤ ~150 lines)
-- `skills/pptx/references/` — pptxgenjs guide, OOXML workflow, deck types (with sources)
-- `skills/pptx/scripts/` — unpack/pack, dup_slide, render, inspect (python3 stdlib or POSIX only)
-- `skills/pptx/examples/deck.js` — starter generator (must keep running via `npm test`)
+- `skills/pptx/references/` — pptxgenjs, charts, design system, OOXML workflow, QA playbook, deck types (with sources)
+- `skills/pptx/scripts/` — unpack/pack, dup_slide, render, inspect, lint (python3 stdlib + python-pptx or POSIX bash), outline_to_pptx (node + pptxgenjs)
+- `skills/pptx/examples/` — deck.js, master-deck.js, outline.sample.json (must keep running via `npm test`)
 - `research/` — local-only working notes (gitignored, not shipped)
 
 ## Constraints
