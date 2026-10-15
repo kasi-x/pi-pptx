@@ -68,6 +68,14 @@ npm test                                    # generates example-deck.pptx + insp
 bash skills/pptx/scripts/render.sh example-deck.pptx   # then LOOK at the images
 ```
 
+## Prior art & alternatives
+
+- [EveryInc/hands-on-deck](https://github.com/EveryInc/hands-on-deck) (MIT) — agent-native pptx engine CLI (inspect / patch / lint / render / diff) when you want a tool rather than a skill.
+- [siril9/presentation-skill](https://github.com/siril9/presentation-skill) (MIT) — `outline.json` → pptxgenjs → QA-gate pipeline.
+- [artifact-kit/pptxgenjs-jsx](https://github.com/artifact-kit/pptxgenjs-jsx) (MIT) — JSX layer over PptxGenJS with `validateDeck()`.
+- Domain variants: [Gabberflast/academic-pptx-skill](https://github.com/Gabberflast/academic-pptx-skill), [carnot-tech/jinba-consulting-pptx-skill](https://github.com/carnot-tech/jinba-consulting-pptx-skill), [singerla/pptx-automizer](https://github.com/singerla/pptx-automizer) (template-based Node library).
+- Markdown-first pipelines: Pandoc / Quarto / [Marp](https://github.com/marp-team/marp-cli) / [Slidev](https://sli.dev/guide/exporting) — their PPTX export is raster unless the experimental editable modes are used.
+
 ## License
 
-MIT — see [LICENSE](LICENSE). Third-party inspirations and further reading are listed in the source sections of `skills/pptx/references/deck-types.md`; the pptxgenjs reference links its upstream docs.
+MIT — see [LICENSE](LICENSE). Content was written from public documentation and independently probed against pptxgenjs 4.0.1; it is an independent implementation and shares no text with Anthropic's source-available `pptx` skill (checked at the 8-gram level). Third-party inspirations and further reading are listed in the source sections of `skills/pptx/references/deck-types.md`; the pptxgenjs reference links its upstream docs.

@@ -29,3 +29,5 @@ Publish (author's call, not automated): `gh repo create kasi-x/pi-pptx --public 
 - Keep runtime deps thin: deck creation uses pptxgenjs (MIT); QA scripts use python3 stdlib / python-pptx / LibreOffice / poppler.
 - After changing scripts or the example: run `npm test` and the render loop, and look at the images.
 - No emoji in shipped files.
+- Tainted sources (do not copy text/code from): `MiniMax-AI/skills`, `anyideaz/pptx-skills`, `msxabc/powerpoint-skills`, `Piotr-Miller/anthropic-skills` — they contain text from Anthropic's source-available skill; `tfriedel/claude-office-skills` and the claudekit `slides` skill have no license; blog posts are author-owned (re-verify facts, rewrite prose).
+- Before claiming novelty, re-check GitHub for `pptx` / `pptxgenjs` / `slide deck skill` prior art (see README "Prior art & alternatives"; note `siril9/presentation-skill` claims the `pptx-skill` alias).

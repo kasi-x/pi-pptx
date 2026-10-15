@@ -71,8 +71,9 @@ Rules that prevent most corruption and rework:
 ## QA (required before delivering)
 
 1. `scripts/render.sh out.pptx` → look at **every** image. Check in this order: text overflow/clipping (most common), overlaps, gaps < 0.3″, margins < 0.5″, low contrast, misalignment, leftover placeholder text.
-2. `markitdown out.pptx | grep -iE "lorem|ipsum|TODO|xxx|\[insert"` — template leftovers.
-3. Fix in the generator or source XML, re-render only changed slides, repeat until clean.
+2. Deterministic overflow spot-check: `pdftotext -bbox-layout <outdir>/out.pdf -` and scan for word boxes crossing the page edges (page box minus ~36 pt ≈ 0.5″).
+3. `markitdown out.pptx | grep -iE "lorem|ipsum|TODO|xxx|\[insert"` — template leftovers.
+4. Fix in the generator or source XML, re-render only changed slides, repeat until clean.
 
 ## Dependencies
 

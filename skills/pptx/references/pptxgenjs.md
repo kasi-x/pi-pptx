@@ -1,6 +1,6 @@
 # pptxgenjs 4.x — practical guide
 
-Verified against **pptxgenjs 4.0.1** on 2026-10-15 (behaviors marked "verified" were probed on this machine; "OOXML rule" facts come from the shape/chart schemas).
+Verified against **pptxgenjs 4.0.1** on 2026-10-15 (behaviors marked "verified" were probed on this machine; "OOXML rule" facts come from the shape/chart schemas). **Pin `pptxgenjs >= 4.0.1`** — older 4.x/3.x releases shipped unopenable chart workbooks and several repair-dialog classes, and much of the "gotchas" writing online was written against those versions.
 
 ## Minimal program
 
@@ -21,8 +21,8 @@ One `new pptxgen()` per output file; `writeFile()` is the only exit point. Full 
 ## Canvas & coordinates
 
 - Coordinates are **inches** from the top-left, or percent strings (`"5%"`). Off-canvas content is written into the XML but never shown — nothing is clamped.
-- `LAYOUT_16x9` (default) is **10 × 5.625 in** — verified: without setting `layout`, the canvas is 9144000 × 5143500 EMU. `LAYOUT_WIDE` is 13.333 × 7.5 in.
-- Set `p.layout` (and `p.defineSlideMaster` if used) before adding slides.
+- `LAYOUT_16x9` (default) is **10 × 5.625 in** — verified: without setting `layout`, the canvas is 9144000 × 5143500 EMU. Other presets: `LAYOUT_16x10` (10 × 6.25), `LAYOUT_4x3` (10 × 7.5), `LAYOUT_WIDE` (13.333 × 7.5); custom sizes via `p.defineLayout({ name, width, height })`.
+- Set `p.layout` (and any `p.defineSlideMaster(...)`) before adding slides.
 
 ## Text
 
@@ -37,8 +37,8 @@ s.addText(
 - Paragraphs = array of `{ text, options }`; `breakLine: true` starts a new line, `bullet: true` a native bullet (both **verified**: emits `<a:buChar>`; a literal `•` in the text renders doubled).
 - `charSpacing: 6` → `spc="600"` in the XML (**verified**); `letterSpacing` is **ignored** (**verified**).
 - Text boxes carry built-in padding; set `margin: 0` whenever text must align with shapes/lines (**verified**: writes `lIns="0"`; without it the padding is applied at render time).
-- `fit: "shrink"` / `"resize"` exists for overflow, but reduce text instead — shrink-to-fit usually ships unreadable font sizes.
-- Colors: plain hex without `#`. A leading `#` is tolerated (**verified**: `"#FF0000"` is written as `val="FF0000"`), but don't rely on it. **No alpha in the hex** — use `transparency: 0-100` (fills/images) or `opacity: 0-1` (shadows); each is ignored where it doesn't apply.
+- `fit: "shrink"` / `"resize"` exists for overflow (the old `autoFit`/`shrinkText` names were removed in v4), but reduce text instead — shrink-to-fit usually ships unreadable font sizes.
+- Colors: plain hex without `#`. A leading `#` is tolerated (**verified**: `"#FF0000"` is written as `val="FF0000"` and the package stays valid), but don't rely on it. **No alpha in the hex** — use `transparency: 0-100` (fills/images; `alpha` is deprecated) or `opacity: 0-1` (shadows); each is ignored where it doesn't apply.
 - Ellipsis/quotes: plain Unicode is fine.
 
 ## Shapes
@@ -47,7 +47,7 @@ s.addText(
 - Fill/line/shadow are separate option objects:
   `fill: { color: "2A9D8F", transparency: 15 }`, `line: { color: "16324F", width: 1 }`,
   `shadow: { type: "outer", color: "000000", blur: 6, offset: 3, angle: 90, opacity: 0.35 }`.
-- **Option objects are mutated in place** (**verified**: after one `addShape` call the object gained `line: {type:"none"}` and `objectName`) — build a fresh object per call, never share one `shadow`/options object between two `add*` calls.
+- **Option objects are mutated in place** (**verified**: after `addShape` the object had gained `line: {type:"none"}` and `objectName`; the text path also injects `lineSpacing*` and `_bodyProp` keys) — build a fresh object per call, never share one `shadow`/options object between two `add*` calls.
 - Shadow `offset` is documented for positive values; keep offsets ≥ 0 and cast upward shadows with `angle: 270` (negative offsets still wrote and rendered here, but PowerPoint behavior is unverified — don't risk it).
 
 ## Images
@@ -58,6 +58,7 @@ s.addImage({ data: "image/png;base64," + buf.toString("base64"), x: 0.7, y: 1.2,
 ```
 
 - Local path or `data:` URI (the `image/png;base64,` / `image/jpeg;base64,` prefix is required); `sizing` controls crop vs fit.
+- Keep image paths and extensions **lowercase** — a `.PNG` relationship target breaks case-sensitive readers and triggers PowerPoint's repair dialog.
 - Icons: there is no SVG/icon support — rasterize icons yourself (e.g. render an icon to PNG ≥ 256 px) and insert as an image, or draw simple icons from shapes.
 - Prefer real image files in the project; base64 keeps a single-file workflow but bloats the JS.
 
@@ -74,7 +75,7 @@ s.addTable(
 );
 ```
 
-Style per cell (fill/bold/color/align); keep row heights uniform and let text wrap — set `rowH` large enough for the longest cell.
+Style per cell (fill/bold/color/align); keep row heights uniform and let text wrap — set `rowH` large enough for the longest cell. When a table must span slides, tune `autoPage`, `autoPageRepeatHeader`, `autoPageLineWeight`, `autoPageCharWeight` — the defaults over-paginate mixed-format runs.
 
 ## Charts
 
@@ -95,13 +96,19 @@ s.addChart(p.ChartType.line, [{ name: "requests", labels: ["Q1","Q2","Q3","Q4"],
 
 - Defaults render bare (no title, no labels, dated palette) — always set title/labels/colors explicitly, or turn them off deliberately.
 - Data labels on **stacked** bar/column charts: `dataLabelPosition` must be `"ctr"`, `"inEnd"`, or `"inBase"`. `"outEnd"` is illegal for stacked axes in the OOXML schema — pptxgenjs writes it anyway (**verified**: `dLblPos val="outEnd"` lands in `chart1.xml` without error), and PowerPoint then refuses the chart. Nothing local catches this — check your chart types.
-- Combo charts with a secondary axis need explicit `valAxes` **and** `catAxes` arrays (two entries each) in the chart options; without them the chart references axis ids it never declares.
-- Add the embedded-workbook caveat: chart data lives in the chart part; editing chart XML by hand is rarely worth it — regenerate that slide instead.
+- Secondary-axis options (`valAxes`/`catAxes`, two entries each) belong to **combination charts only**. On a single-series chart they pass `addChart()` and then **throw during `writeFile()`** (**verified**) — chart mistakes can surface at serialization time, not when you build the chart.
+- A single data series takes a **single-element** `chartColors` array; a multi-color array on a one-series bar chart mis-colors it and misreads the legend.
+- Chart data lives in an embedded workbook inside the chart part; regenerate the slide rather than hand-editing that XML.
 
-## Notes & metadata
+## Notes, sections, masters
 
 - `s.addNotes("...")` — plain text, once per slide; never put talk track into slide text boxes.
+- Built-ins before hand-rolled XML: `p.addSection({ title })` + `addSlide({ sectionTitle })` for sections, `p.defineSlideMaster()` for branded masters and placeholders.
 - `p.title`, `p.subject`, `p.author` set document metadata.
+
+## When PowerPoint asks to repair
+
+The dialog gives no location. Bisect instead: (1) regenerate with one slide and add slides until it breaks, (2) drop element types one at a time (text / image / table / chart / shape) until it opens, (3) re-check that element's options against the docs. Chart options are the usual suspect — `addChart()` accepts things `writeFile()` later rejects.
 
 ## Fonts & QA reliability
 
@@ -125,17 +132,21 @@ Practical rules: use Calibri/Cambria/Arial/Times/Courier New for Latin body text
 ## Known gotchas (quick list)
 
 1. `layout` after the first `addSlide` is ignored.
-2. Shared option objects get mutated → build fresh objects.
+2. Option objects may be mutated on first use (the text path injects `objectName`/`line`/`_bodyProp`; verified) → build fresh objects.
 3. `#`-colors tolerated, alpha-in-hex not; `transparency` vs `opacity` are not interchangeable.
 4. `letterSpacing` is a no-op (`charSpacing` is real).
 5. `rectRadius` only on rounded rects.
 6. Literal `•` doubles with `bullet: true`.
 7. `outEnd` labels on stacked bars → PowerPoint-rejected chart.
-8. Charts render bare without explicit style options.
-9. Off-canvas shapes are silently invisible.
-10. One `pptxgenjs` instance per file.
+8. Secondary-axis options on a single chart → thrown at `writeFile()`.
+9. Uppercase image paths → repair dialog.
+10. Charts render bare without explicit style options.
+11. Off-canvas shapes are silently invisible.
+12. One `pptxgenjs` instance per file.
 
 ## Upstream
 
-- PptxGenJS — README & API docs: https://github.com/gitbrent/PptxGenJS
-- Issue tracker (check here before working around a "bug"): https://github.com/gitbrent/PptxGenJS/issues
+- PptxGenJS — README: https://github.com/gitbrent/PptxGenJS · docs: https://gitbrent.github.io/PptxGenJS/docs/quick-start/
+- Repair-dialog troubleshooting: https://gitbrent.github.io/PptxGenJS/docs/needs-repair-errors/
+- Issues — canonical cases: [#860](https://github.com/gitbrent/PptxGenJS/issues/860) (uppercase image path), [#1013](https://github.com/gitbrent/PptxGenJS/issues/1013) (secondary-axis combo), [#285](https://github.com/gitbrent/PptxGenJS/issues/285) (single-series `chartColors`)
+- Releases (why ≥ 4.0.1): https://github.com/gitbrent/PptxGenJS/releases

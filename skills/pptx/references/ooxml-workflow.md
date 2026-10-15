@@ -49,6 +49,14 @@ scripts/pack.sh unpacked/ out.pptx
 - **New media**: put the file in `ppt/media/`, add a relationship in the slide's `.rels`, and add a content-type default/override if the extension is new.
 - **Charts** live in `ppt/charts/chartN.xml` with an embedded workbook; heavy data changes are usually faster and safer by regenerating that slide (or the chart) with pptxgenjs and re-inserting it.
 
+## Validity traps (post-write checks)
+
+PowerPoint's repair dialog usually comes from a handful of mechanical faults. If you (or a tool) generate OOXML, verify these before packing:
+
+- `<p:cNvPr name="">` must not be empty; `<a:ln/>` must not be empty; no `<a:ext cx/cy>` of 0; a `<a:bodyPr>` carries `<a:normAutofit/>` **or** `<a:spAutoFit/>`, never both; no dimension below 10,000 EMU (≈ 0.011 in).
+- The package is an OPC ZIP: the document type comes from the root `_rels/.rels` relationship — keep it consistent with `[Content_Types].xml`.
+- Units: 1 in = 914,400 EMU; 1 cm = 360,000 EMU.
+
 ## Template workflow (fill a `.potx` / house deck)
 
 1. Render the template first — `scripts/render.sh template.pptx` works on `.potx` too — and pick the layouts/slides to copy.
@@ -63,3 +71,9 @@ scripts/pack.sh unpacked/ out.pptx
 scripts/inspect_deck.py out.pptx        # opens + counts
 scripts/render.sh out.pptx              # render every slide and look at them
 ```
+
+## Sources
+
+- MS Learn — Structure of a PresentationML document: https://learn.microsoft.com/en-us/office/open-xml/presentation/structure-of-a-presentationml-document
+- ECMA-376 (OOXML standard): https://ecma-international.org/publications-and-standards/standards/ecma-376/
+- Known PptxGenJS-emitted XML faults + EMU unit table: https://github.com/abdelkrimkr/html2pptx/blob/master/CORRUPTION_FIXES.md
