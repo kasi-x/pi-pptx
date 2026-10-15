@@ -5,3 +5,4 @@ slide-*.jpg
 render/
 research/
 .DS_Store
+*.tgz
