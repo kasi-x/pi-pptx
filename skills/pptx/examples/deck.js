@@ -38,8 +38,8 @@ s1.addNotes("Open with the single takeaway, then preview the three numbers slide
 
 // 2) Stat callouts — big numbers with small labels.
 const s2 = p.addSlide();
-s2.addText("Three numbers that matter", {
-	x: 0.7, y: 0.5, w: 11.9, h: 0.8,
+	s2.addText("Revenue, cycle time and shipments all rose this quarter", {
+	x: 0.7, y: 0.5, w: 11.9, h: 1.2,
 	fontFace: FONT.head, fontSize: 32, bold: true, color: C.ink, margin: 0,
 });
 const stats = [
@@ -85,9 +85,8 @@ s3.addNotes("Talk track: emphasize the capacity inflection at Q4, not the raw gr
 
 // 4) Table slide — decisions, owners, dates.
 const s4 = p.addSlide();
-s4.addText("Plan for next quarter", {
-	x: 0.7, y: 0.5, w: 11.9, h: 0.8,
-	fontFace: FONT.head, fontSize: 32, bold: true, color: C.ink, margin: 0,
+	s4.addText("Next quarter runs three workstreams with owners and dates", {
+	x: 0.7, y: 0.5, w: 11.9, h: 1.2,
 });
 const head = [
 	{ text: "Workstream", options: { bold: true, fill: { color: C.navy }, color: C.paper } },

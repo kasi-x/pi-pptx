@@ -16,6 +16,7 @@ A `.pptx` is a zip archive of XML parts. Every task below is either "emit one wi
 | Read content | `markitdown deck.pptx`, or `scripts/inspect_deck.py deck.pptx` |
 | Chart design & recipes | `references/charts.md` (chooser, tested recipes, option tables) |
 | Palette / type / layout system | `references/design-system.md` |
+| Content, copy, AI-smell guardrails | `references/content-rules.md` |
 | Full QA pass | `references/qa.md` + `scripts/lint_deck.py` + `scripts/render.sh` |
 | Genre playbooks | `references/deck-types.md` (consulting / academic / product / internal / training) |
 
@@ -86,9 +87,10 @@ Full playbook, numeric thresholds and the visual-QA subagent prompt: `references
 | node ≥ 18 + `pptxgenjs` ^4 | deck creation | `npm install pptxgenjs` in the project |
 | python3 + `python-pptx` | `scripts/inspect_deck.py`, `scripts/lint_deck.py` | `pip install python-pptx` (or a tool runner: `uv tool`) |
 | `markitdown[pptx]` | text dumps | `uv tool install "markitdown[pptx]"` |
-| LibreOffice + poppler (`soffice`, `pdftoppm`) | `scripts/render.sh` | distro packages: `libreoffice poppler-utils` |
 
 ## House rules
+
+- Titles are conclusions: one clear claim per slide; no subtitle rows under titles.
 
 - Native-first: charts, tables, and diagrams PowerPoint can build stay native parts, not images.
 - Body text ≥ 14pt and high contrast — the back row must be able to read it.
