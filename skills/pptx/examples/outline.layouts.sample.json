@@ -1,0 +1,120 @@
+{
+  "meta": {
+    "title": "横断レイアウトのサンプル",
+    "subtitle": "学術・製品・コンサルで使える10の型",
+    "author": "Strategy team",
+    "date": "2026-11",
+    "kicker": "Layout library",
+    "source": "出典：サンプルデータ（2026年）"
+  },
+  "palette": "consulting",
+  "slides": [
+    { "type": "title" },
+    {
+      "type": "agenda",
+      "title": "この資料は5つの問いに答える",
+      "sections": [
+        { "title": "現状", "text": "どこで値引きが起きているか" },
+        { "title": "原因", "text": "判断基準の欠如が主因" },
+        { "title": "構造", "text": "3つの枝に分解して考える" },
+        { "title": "優先順位", "text": "影響度と確率でリスクを並べる" },
+        { "title": "実行", "text": "4ステップでガバナンスを再設計" }
+      ],
+      "note": "目次は5項目。各セクションの問いだけを読み上げる。"
+    },
+    {
+      "type": "timeline",
+      "kicker": "変遷",
+      "title": "価格ガバナンスは4期で段階的に効く",
+      "events": [
+        { "date": "2026 Q1", "label": "可視化", "text": "割引ログを分類" },
+        { "date": "2026 Q2", "label": "基準策定", "text": "承認ラインを3段階に" },
+        { "date": "2026 Q3", "label": "全社展開", "text": "営業にルールを適用" },
+        { "date": "2026 Q4", "label": "検証", "text": "単価と利益率を確認" }
+      ],
+      "source": "出典：社内ロードマップ（2026年）"
+    },
+    {
+      "type": "compare",
+      "title": "統一前後で承認のスピードは落ちない",
+      "compare": {
+        "headers": ["現在", "統一後"],
+        "rows": [
+          ["承認基準", "案件ごと", "3段階に統一"],
+          ["承認記録", "42%が欠落", "全件残る"],
+          ["平均リードタイム", "2.4日", "2.1日"]
+        ]
+      }
+    },
+    {
+      "type": "quote",
+      "title": "現場の一言が原因を物語っている",
+      "quote": "上限があることは知っていた。でも、どのケースで例外にできるかは誰も教えてくれなかった。",
+      "attribution": "営業本部 課長（2026年9月ヒアリング）"
+    },
+    {
+      "type": "kpi_dashboard",
+      "kicker": "定点観測",
+      "title": "4つの指標が改善の進み具合を示す",
+      "kpis": [
+        { "label": "受注単価", "value": "+18%", "delta": "前年比 +6pt", "spark": [40, 48, 45, 58, 63, 70] },
+        { "label": "割引率", "value": "-12%", "delta": "前年比 -3pt", "spark": [70, 65, 60, 55, 48, 44] },
+        { "label": "承認記録率", "value": "96%", "delta": "前月比 +8pt", "spark": [30, 38, 52, 60, 82, 96] },
+        { "label": "審査リードタイム", "value": "2.1日", "delta": "前月比 -0.3日", "spark": [3.2, 3.0, 2.7, 2.5, 2.3, 2.1] }
+      ],
+      "source": "出典：受注データ、価格監査（2026年9月）"
+    },
+    {
+      "type": "issue_tree",
+      "title": "利益漏れは3つの枝に分解できる",
+      "root": "なぜ受注単価は下がっているのか？",
+      "branches": [
+        { "label": "基準", "text": "上限が案件ごとに違う" },
+        { "label": "承認", "text": "記録が残らず追溯できない" },
+        { "label": "動機", "text": "数量目標が単価を押し切る" }
+      ]
+    },
+    {
+      "type": "process_steps",
+      "title": "4ステップで価格ガバナンスを再設計する",
+      "steps": [
+        { "title": "ログを分類", "text": "過去1年の割引理由を整理する" },
+        { "title": "基準を策定", "text": "3段階の承認ラインを決める" },
+        { "title": "ツールに実装", "text": "見積り画面にチェックを入れる" },
+        { "title": "月次で検証", "text": "単価と例外件数を追う" }
+      ]
+    },
+    {
+      "type": "metric_callout",
+      "kicker": "インパクト",
+      "title": "利益漏れの半分は承認ルールで防げる",
+      "value": "2.4",
+      "unit": "億円/年",
+      "label": "年間利益漏れの推計額",
+      "context": "うち1.2億円は承認記録の欠落に起因する。"
+    },
+    {
+      "type": "risk_matrix",
+      "title": "まず記録欠落と数量目標のリスクを抑える",
+      "axes": { "x": { "name": "発生確率", "low": "低い", "high": "高い" }, "y": { "name": "影響度", "low": "小さい", "high": "大きい" } },
+      "risks": [
+        { "label": "承認記録の欠落", "impact": "high", "probability": "high" },
+        { "label": "数量目標の優先", "impact": "high", "probability": "mid" },
+        { "label": "基準の不明確さ", "impact": "mid", "probability": "high" },
+        { "label": "システム改修の遅れ", "impact": "mid", "probability": "low" }
+      ]
+    },
+    {
+      "type": "team_roster",
+      "title": "4名のオーナーが実行を支える",
+      "members": [
+        { "name": "佐藤 花子", "initials": "佐藤", "role": "販売企画（リード）", "text": "承認基準の策定を担当" },
+        { "name": "Michael Chen", "initials": "MC", "role": "データ分析", "text": "割引ログと効果測定を担当" },
+        { "name": "田中 健", "initials": "田中", "role": "営業システム", "text": "見積り画面の改修を担当" },
+        { "name": "Aisha Khan", "initials": "AK", "role": "Change management", "text": "現場への浸透を担当" }
+      ],
+      "note": "各オーナーの担当を1行で述べ、最後に販売企画が全体を統括すると締める。"
+    },
+    { "type": "closing", "title": "ご審議をお願いします" }
+  ]
+}

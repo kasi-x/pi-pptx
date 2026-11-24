@@ -1,6 +1,6 @@
 # Consulting-Q レイアウト（高級コンサル向け outline types）
 
-`outline_to_pptx.js` の `"palette": "consulting"` 専用の型と共通装飾。決定論的に描画するので、
+`outline_to_pptx.js` の consulting 用の型と共通装飾、および全 palette で使える横断レイアウト（§4）。決定論的に描画するので、
 内容の良し悪しは outline 側で決める。数値・コントラスト・余白の正本は [design-system.md](design-system.md)、
 文体と TPO の選び方は [deck-types.md](deck-types.md) を参照。
 
@@ -171,3 +171,131 @@ python3 scripts/lint_deck.py /tmp/consulting.pptx
 `exec_summary` で答え → `kpi_row` / `axis_table` で根拠 → `issue_action` / `chevron_flow` で着手順 →
 `status_heatmap` / `two_by_two` で優先順位 → `bridge` で効果 → `recommendation` で決定、という流れが
  examples/outline.consulting.sample.json に実装例としてある。連続するスライドで同じ型を使わないこと。
+
+## 4. 横断レイアウト（全 palette 共通）
+
+以下の 10 型は palette 非依存で、`ocean` / `forest` / `clay` / `consulting` のどれでも同じ構造で描画する。
+`palette: "consulting"` のときは既存の仕組みにより kicker / source / ページ番号が自動で付くので、
+各型の JSON に装飾の座標を書く必要はない。`def.title` / `def.kicker` / `def.source` / `def.note`（`notes` も可）は共通。
+全型を 1 枚に詰めた例は examples/outline.layouts.sample.json にある。
+
+### timeline — 横軸タイムライン
+
+```json
+{ "type": "timeline", "title": "価格ガバナンスは4期で段階的に効く",
+  "events": [{ "date": "2026 Q1", "label": "可視化", "text": "割引ログを分類" }] }
+```
+
+軸線の上に日付、下にイベント名と 1 行説明を配置するノードを最大 6 個まで等間隔で並べる（§4 Timeline）。
+`date` と `label` は必須。**使いどころ**: ロードマップ、変遷、マイルストーン。
+**避けるべき**: 7 つ以上の出来事、日付とイベント名の対応が読めない密度、説明が 1 行を超える文。
+
+### compare — 行ラベル付き比較表
+
+```json
+{ "type": "compare", "title": "統一前後で承認のスピードは落ちない",
+  "compare": { "headers": ["現在", "統一後"], "labelHeader": "項目",
+    "rows": [["承認基準", "案件ごと", "3段階に統一"]] } }
+```
+
+2〜3 列の比較表。先頭列は太字の行ラベル、残りを比較対象にする（最大 7 行）。`headers` / `rows` は
+`def` 直下に置いてもよい。**使いどころ**: Before/After、Option A/B/C の直感的な差。
+**避けるべき**: 3 列を超える比較、行間で比較軸が変わる、セルに文章を詰める。
+
+### quote — 引用
+
+```json
+{ "type": "quote", "title": "現場の一言が原因を物語っている",
+  "quote": "上限は知っていた。でも例外の基準は誰も教えてくれなかった。",
+  "attribution": "営業本部 課長（2026年9月ヒアリング）" }
+```
+
+大きな引用文と出典だけを置くミニマルな 1 枚。`quote` と `attribution` は必須。
+**使いどころ**: インタビューの一言で問題を定義するとき、学術発表の有名な命題を置くとき。
+**避けるべき**: 引用が 3 行を超える、出典が曖昧、引用の言い換えを本文に並べる。
+
+### kpi_dashboard — 2x2 KPI グリッド
+
+```json
+{ "type": "kpi_dashboard", "title": "4つの指標が改善の進み具合を示す",
+  "kpis": [{ "label": "受注単価", "value": "+18%", "delta": "前年比 +6pt",
+             "spark": [40, 48, 45, 58, 63, 70] }] }
+```
+
+ラベル → 数値 → 変化（矢印付き）→ 8 ステップ以下のスパークラインを淡いカードにまとめる（最大 4 セル）。
+`spark` は数値配列で、最小値から最大値へブロックの高さを割り当てる。省略すると矢印だけを表示。
+`label` と `value` は必須。**使いどころ**: status_heatmap より数値の動きを強調したい定点観測。
+**避けるべき**: 単位の違う数値を同じ目盛りで並べる、変化の向きだけ示して根拠を添えない。
+
+### issue_tree — MECE イシューツリー
+
+```json
+{ "type": "issue_tree", "title": "利益漏れは3つの枝に分解できる",
+  "root": "なぜ受注単価は下がっているのか？",
+  "branches": [{ "label": "基準", "text": "上限が案件ごとに違う" }] }
+```
+
+頂点の問いから 3〜4 本の枝を引き、各枝に小見出しと 1 行を置く。`root`（`question` でも可）と各枝の
+`label` / `text` は必須。**使いどころ**: 原因の分解、仮説ツリー、コンサルの問題定義。
+**避けるべき**: 枝が重複して MECE でない、枝が 2 本しかない、各枝の文章が 2 行を超える。
+
+### process_steps — 縦型の番号付き手順
+
+```json
+{ "type": "process_steps", "title": "4ステップで価格ガバナンスを再設計する",
+  "steps": [{ "title": "ログを分類", "text": "過去1年の割引理由を整理する" }] }
+```
+
+番号 → タイトル → 説明を縦に積む（1〜6 ステップ）。6 件のときは文字を一段階小さくして収める。
+`title` / `text` は必須。**使いどころ**: 順序は重要だが矢羽ほど宣伝色が強くない社内手順、実装計画。
+**避けるべき**: chevron_flow と同じ資料で同じ順序を二重に描く、説明が汎用動詞だけ。
+
+### metric_callout — 巨大数値の 1 枚
+
+```json
+{ "type": "metric_callout", "title": "利益漏れの半分は承認ルールで防げる",
+  "value": "2.4", "unit": "億円/年", "label": "年間利益漏れの推計額",
+  "context": "うち1.2億円は承認記録の欠落に起因する。" }
+```
+
+88pt の数値 + 単位 + ラベル + 1 行の文脈だけを置く。`value` / `label` は必須。
+**使いどころ**: キーメッセージとして 1 つの数字を記憶させたいとき（stats よりインパクト重視）。
+**避けるべき**: 2 つ以上の数値を並べる（その場合は kpi_row / kpi_dashboard）、単位を省略する。
+
+### agenda — 目次
+
+```json
+{ "type": "agenda", "title": "この資料は5つの問いに答える",
+  "sections": [{ "title": "現状", "text": "どこで値引きが起きているか" }] }
+```
+
+大きな番号付きのセクション名と各 1 行の説明（最大 6 件）。`title` は必須、
+`text` は省略可。**使いどころ**: 冒頭のロードマップ、長い資料の道しるべ、consulting のアジェンダ。
+**避けるべき**: セクションが 7 つ以上、説明がタイトルの言い換え、結論を目次で語る。
+
+### risk_matrix — 影響度 × 発生確率
+
+```json
+{ "type": "risk_matrix", "title": "まず記録欠落と数量目標のリスクを抑える",
+  "axes": { "x": { "name": "発生確率", "low": "低い", "high": "高い" },
+            "y": { "name": "影響度", "low": "小さい", "high": "大きい" } },
+  "risks": [{ "label": "承認記録の欠落", "impact": "high", "probability": "high" }] }
+```
+
+3x3 の格子にリスクをプロットする。`impact` / `probability` は `low` / `mid` / `high`（最大 9 件、
+同じマスには最大 2 件まで縦に並べる）。リスクの字は ● / ▲ / ※ と色の両方で示し、色だけに依存しない。
+`label` と 2 軸の値は必須。**使いどころ**: リスク登録簿の可視化、対策の優先順位付け。
+**避けるべき**: 軸の定義が曖昧、全リスクが同じマス、ラベルがマスの幅をはみ出す。
+
+### team_roster — 役割リスト
+
+```json
+{ "type": "team_roster", "title": "4名のオーナーが実行を支える",
+  "members": [{ "name": "佐藤 花子", "initials": "佐藤", "role": "販売企画（リード）",
+                "text": "承認基準の策定を担当" }] }
+```
+
+2 列 x 3 行のカードに、四角いイニシャル + 名前 + 役割 + 担当 1 行を置く（最大 6 名）。
+`initials` を省略すると名前の先頭 2 文字を使う。`name` / `role` は必須。
+**使いどころ**: product / pitch のチーム紹介、社内プロジェクトのオーナー明確化。
+**避けるべき**: 役割だけで担当が分からない、写真なしで顔写真を期待させる、6 人を超える。

@@ -4,16 +4,18 @@ The generator (or the source XML) is the source of truth: fix defects there, nev
 
 ## The loop, in order
 
-1. **Static pass** — `python3 scripts/lint_deck.py out.pptx` (geometry, fonts, overflow heuristics, placeholder text, image resolution). Cheap; catches most mechanical faults before anything is rendered.
-2. **Content pass** — `markitdown out.pptx` — read it like a stranger: missing sections, wrong order, typos; then `markitdown out.pptx | grep -iE "lorem|ipsum|TODO|xxx|\[insert"` for template leftovers.
-3. **Render pass** — `scripts/render.sh out.pptx` and look at **every** image (or hand the folder to a fresh subagent — prompt below). Rendered defects that no static check sees: text clipped by its own box, one element stacked under another, decoration positioned for a title that wrapped to two lines.
-4. **Rendered-text pass** — deterministic overflow check without eyes:
+1. **Structure pass** — `python3 scripts/validate_deck.py out.pptx --json` (stdlib OOXML check: zip/content types, .rels targets, slide registration, well-formed XML, media/chart parts). Run this first: a half-repacked deck can fail in ways no layout check explains. It exits 1 on errors; python-pptx's final open check is a warning if the package is absent.
+2. **Static pass** — `python3 scripts/lint_deck.py out.pptx` (geometry, fonts, overflow heuristics, placeholder text, image resolution). Cheap; catches most mechanical faults before anything is rendered.
+3. **Content pass** — `markitdown out.pptx` — read it like a stranger: missing sections, wrong order, typos; then `markitdown out.pptx | grep -iE "lorem|ipsum|TODO|xxx|\[insert"` for template leftovers.
+4. **Render pass** — `scripts/render.sh out.pptx` and look at **every** image (or hand the folder to a fresh subagent — prompt below). Rendered defects that no static check sees: text clipped by its own box, one element stacked under another, decoration positioned for a title that wrapped to two lines. Without LibreOffice, `python3 scripts/preview_deck.py out.pptx` writes a self-contained HTML preview (text, tables, embedded images, notes) — good for a content/structure read, but still get real renders before sign-off.
+5. **Rendered-text pass** — deterministic overflow check without eyes:
 
    ```bash
    pdftotext -bbox-layout render/out.pdf - | grep -E 'xMin="(|-)' # or parse the boxes:
    ```
    Compare word boxes against the page box minus ~36 pt (0.5 in); anything crossing an edge is clipped or spilling.
-5. **Fix → re-render only what changed → repeat.** Cap the loop: after ~3 iterations, cut content instead of shrinking type.
+6. **Fix → re-render only what changed → repeat.** Cap the loop: after ~3 iterations, cut content instead of shrinking type.
+7. **Review receipt (final pass only)** — after the last fix, re-render, have the images judged, then bind the verdict to those exact bytes (section below). A later deck edit invalidates the receipt: re-render and re-review.
 
 ## Visual QA with a fresh subagent (copy-paste prompt)
 
@@ -38,6 +40,32 @@ End with the top 3 fixes ranked by user-visible impact. Do not answer
 
 Use a subagent (or a second model pass) because the deck's author cannot see its own defects.
 
+## Review receipt (proof the verdict is still current)
+
+A "pass" is only meaningful for the exact files that were judged. After the
+final render, write the review payload to `review.json`:
+
+```json
+{"schema_version": "visual_judgment_v1",
+ "reviewer": {"type": "human", "name": "reviewer-name"},
+ "verdict": "pass",
+ "findings": []}
+```
+
+```bash
+python3 scripts/visual_review_receipt.py out.pptx render/ review.json -o review.receipt.json
+python3 scripts/visual_review_receipt.py --verify review.receipt.json  # 0 pass, 1 mismatch
+```
+
+The receipt records the SHA-256 of the deck bytes, of each `slide-*.jpg/png`
+in the render directory, and the review payload itself. Verification fails on
+a changed/added/missing deck or image — use it after every handoff or edit to
+catch "deck changed after review" before delivery. Changing the deck means
+re-render, re-review and regenerate the receipt; do not edit the receipt by
+hand. Concept adapted from siril9/presentation-skill (MIT); this is an
+independent, simplified implementation using raw file hashes (no OOXML
+normalization, no extra dependencies).
+
 ## Numeric thresholds (acceptance)
 
 | Item | Rule |
@@ -59,7 +87,9 @@ Contrast references: WCAG 2.1 SC 1.4.3/1.4.11. The gap/margin thresholds follow 
 
 ## Deliverable checklist
 
-- [ ] Deck opens in python-pptx (`inspect_deck.py`), lints clean (or: every remaining finding explained), and renders with slide-count == image-count.
+- [ ] `validate_deck.py` reports 0 errors (content types, relationships, slide registration, XML, media parts).
+- [ ] If LibreOffice was unavailable, `preview_deck.py` HTML was read slide-by-slide for content; real renders were still checked before sign-off.
+- [ ] `visual_review_receipt.py --verify` passes for the delivered deck and final renders (receipt regenerated after the last fix).
 - [ ] Placeholders gone; speaker notes carry the talk track (`slide.addNotes`) — not slide text.
 - [ ] Fonts from the safe list, or width slack left for substituted fonts (see `design-system.md`).
 - [ ] The generating script is saved next to the deck (regenerable, deterministic); seed/inputs noted.

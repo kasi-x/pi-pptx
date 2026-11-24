@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-11-24
+
+### Added
+
+- 10 additional slide types in `outline_to_pptx.js` (palette-agnostic): `timeline`, `compare`, `quote`, `kpi_dashboard`, `issue_tree`, `process_steps`, `metric_callout`, `agenda`, `risk_matrix`, `team_roster` — with `examples/outline.layouts.sample.json` and docs in `references/consulting-layouts.md` §4.
+- `scripts/render_assets.py` + `references/assets.md` — Mermaid/DOT/LaTeX asset pipeline (mmdc/dot/pandoc auto-detected, graceful skip) and new `figure` slide type for embedding rendered images; repo-root `scripts/render_assets.py` wrapper.
+- `scripts/validate_deck.py` — stdlib OOXML structural validator (zip/content-types/relationships/slide-part consistency; `--json`).
+- `scripts/preview_deck.py` — self-contained HTML preview of a deck without LibreOffice (text, tables, images, notes).
+- `scripts/visual_review_receipt.py` — hash-bound visual-QA receipt (`--verify` detects deck/render drift).
+- `references/qa.md` and `SKILL.md` updated with the new tools.
+
 ## [0.3.0] - 2026-11-24
 
 ### Added

@@ -36,13 +36,16 @@ ln -s ../../.agents/skills/pptx ~/.claude/skills/pptx
 | python3 + `python-pptx` | `scripts/inspect_deck.py` | `pip install python-pptx` |
 | `markitdown[pptx]` | text dumps | `uv tool install "markitdown[pptx]"` |
 | LibreOffice + poppler | `scripts/render.sh` (visual QA) | distro: `libreoffice poppler-utils` |
+| mermaid-cli (`mmdc`) | optional: Mermaid diagram assets | `npm install -g @mermaid-js/mermaid-cli` |
+| Graphviz (`dot`) | optional: DOT diagram assets | `brew install graphviz` |
+| pandoc + LaTeX + poppler | optional: equation images (OMML is not supported) | `brew install pandoc mactex poppler` |
 
 Quick check: `node -e "require.resolve('pptxgenjs')" && python3 -c "import pptx" && command -v soffice pdftoppm`.
 
 ## Usage
 
 - **pi / OMP**: `/skill:pptx 顧客向け提案資料を作って` — or just mention decks/slides/プレゼン and the skill is pulled in by its description.
-- **Any host**: read `skills/pptx/SKILL.md`; it routes to `references/` (pptxgenjs guide, OOXML workflow, deck types) and `scripts/` (unpack / pack / dup_slide / render / inspect).
+- **Any host**: read `skills/pptx/SKILL.md`; it routes to `references/` (pptxgenjs guide, OOXML workflow, deck types, assets) and `scripts/` (unpack / pack / dup_slide / render / inspect / render_assets).
 
 ## Layout
 
@@ -55,13 +58,15 @@ skills/pptx/
 │   ├── design-system.md         palette / typography / spacing / layout patterns
 │   ├── ooxml-workflow.md        edit + template-fill workflow
 │   ├── qa.md                    QA playbook, thresholds, visual-QA subagent prompt
+│   ├── assets.md                diagram/formula assets + figure slides
 │   └── deck-types.md            consulting / academic / product / internal playbooks
 ├── scripts/
 │   ├── unpack.sh / pack.sh      zip round-trip for OOXML edits
 │   ├── dup_slide.py             duplicate a slide with full bookkeeping
 │   ├── render.sh                deck → PDF → slide JPEGs
-│   ├── outline_to_pptx.js       outline JSON → deck (deterministic, 7 slide types)
+│   ├── outline_to_pptx.js       outline JSON → deck (deterministic, incl. figure type)
 │   ├── inspect_deck.py          open check + structure/text summary
+│   ├── render_assets.py         optional Mermaid/DOT/LaTeX → SVG/PNG + manifest
 │   └── lint_deck.py             geometry/typography linter (margins, overlaps, fonts, overflow)
 └── examples/
     ├── deck.js                  starter generator (4 slides, chart, table, notes)

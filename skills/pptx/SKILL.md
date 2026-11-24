@@ -14,13 +14,17 @@ A `.pptx` is a zip archive of XML parts. Every task below is either "emit one wi
 | Create a new deck | `pptxgenjs` script (`references/pptxgenjs.md`; starters: `examples/deck.js`, `examples/master-deck.js`) or outline JSON → `scripts/outline_to_pptx.js` |
 | Edit / fill an existing deck or template | unpack → edit slides + bookkeeping → repack — `references/ooxml-workflow.md` |
 | Read content | `markitdown deck.pptx`, or `scripts/inspect_deck.py deck.pptx` |
+| Structural validation (package / relationships) | `scripts/validate_deck.py deck.pptx` (stdlib; `--json` for automation) |
+| Quick content preview without LibreOffice | `scripts/preview_deck.py deck.pptx` → self-contained HTML (text, tables, images, notes) |
 | Chart design & recipes | `references/charts.md` (chooser, tested recipes, option tables) |
 | Palette / type / layout system | `references/design-system.md` |
 | Content, copy, AI-smell guardrails | `references/content-rules.md` |
 | Full QA pass | `references/qa.md` + `scripts/lint_deck.py` + `scripts/render.sh` |
 | Genre playbooks | `references/deck-types.md` (consulting / academic / product / internal / training) |
 | Consulting-Q slides (executive summary / KPI / matrix / bridge …) | `references/consulting-layouts.md`; outline types + `"palette": "consulting"` → `scripts/outline_to_pptx.js` (sample: `examples/outline.consulting.sample.json`) |
+| 追加レイアウト（全 10 型: timeline / compare / quote / kpi_dashboard / issue_tree / process_steps / metric_callout / agenda / risk_matrix / team_roster） | `references/consulting-layouts.md` §4（全 palette 共通、consulting では chrome 自動付与、サンプル: `examples/outline.layouts.sample.json`） |
 | MBB-quality / TPO-specific consulting decks | `references/consulting-q.md` (TPO matrix, quality bar, storyline-first titles, Japanese writing, NG patterns) |
+| 図解・数式アセット（Mermaid / DOT / LaTeX → 画像、figure slide） | `references/assets.md`; `scripts/render_assets.py outline.json assets/` → `figure` type (OMML は非対応、数式は画像化のみ) |
 
 Paths are relative to **this skill's directory** (the harness prints it when the skill loads; `scripts/` and `references/` live next to this file). Load only the reference you need.
 
@@ -30,6 +34,7 @@ Paths are relative to **this skill's directory** (the harness prints it when the
 node -e "require.resolve('pptxgenjs')"   # creation; install if missing: npm install pptxgenjs
 python3 -c "import pptx"                  # scripts/inspect_deck.py
 command -v soffice pdftoppm markitdown    # rendering / text dump (optional but recommended)
+command -v mmdc dot pandoc                # optional diagram/formula assets (see references/assets.md)
 ```
 
 If `require('pptxgenjs')` fails: `npm install pptxgenjs` in the working project (or `NODE_PATH` to a `node_modules` that has it).
