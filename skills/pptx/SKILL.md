@@ -24,7 +24,8 @@ A `.pptx` is a zip archive of XML parts. Every task below is either "emit one wi
 | Consulting-Q slides (executive summary / KPI / matrix / bridge …) | `references/consulting-layouts.md`; outline types + `"palette": "consulting"` → `scripts/outline_to_pptx.js` (sample: `examples/outline.consulting.sample.json`) |
 | 追加レイアウト（全 10 型: timeline / compare / quote / kpi_dashboard / issue_tree / process_steps / metric_callout / agenda / risk_matrix / team_roster） | `references/consulting-layouts.md` §4（全 palette 共通、consulting では chrome 自動付与、サンプル: `examples/outline.layouts.sample.json`） |
 | MBB-quality / TPO-specific consulting decks | `references/consulting-q.md` (TPO matrix, quality bar, storyline-first titles, Japanese writing, NG patterns) |
-| 図解・数式アセット（Mermaid / DOT / LaTeX → 画像、figure slide） | `references/assets.md`; `scripts/render_assets.py outline.json assets/` → `figure` type (OMML は非対応、数式は画像化のみ) |
+| 図解・数式アセット（Mermaid / DOT / LaTeX → 画像、figure slide） | `references/assets.md`; `scripts/render_assets.py outline.json assets/` → `figure` type |
+| 数式 (LaTeX→OMML) — native editable equations | `references/formulas.md`; write `{{MATH:id}}` in outline text + formulas.json → `scripts/inject_omml.py draft.pptx formulas.json final.pptx` (pandoc required; fallback: `render_assets.py` → `figure`) |
 
 Paths are relative to **this skill's directory** (the harness prints it when the skill loads; `scripts/` and `references/` live next to this file). Load only the reference you need.
 
@@ -34,7 +35,7 @@ Paths are relative to **this skill's directory** (the harness prints it when the
 node -e "require.resolve('pptxgenjs')"   # creation; install if missing: npm install pptxgenjs
 python3 -c "import pptx"                  # scripts/inspect_deck.py
 command -v soffice pdftoppm markitdown    # rendering / text dump (optional but recommended)
-command -v mmdc dot pandoc                # optional diagram/formula assets (see references/assets.md)
+command -v mmdc dot pandoc                # diagrams + formula assets / OMML injection (references/assets.md, formulas.md)
 ```
 
 If `require('pptxgenjs')` fails: `npm install pptxgenjs` in the working project (or `NODE_PATH` to a `node_modules` that has it).

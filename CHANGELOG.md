@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2026-11-24
+
+### Added
+
+- `scripts/inject_omml.py` — LaTeX→OMML native equation injection via pandoc (stdlib-only; replaces `{{MATH:id}}` placeholders in slide XML with `<a14:m>` OMML elements). Partial-failure tolerant; exits 1 only when pandoc is missing.
+- `references/formulas.md` — workflow, formulas.json schema, pandoc install, image fallback via `render_assets.py` + `figure` type.
+
 ## [0.4.0] - 2026-11-24
 
 ### Added

@@ -5,9 +5,12 @@ cannot express. Everything is optional: `render_assets.py` uses only the Python
 standard library, detects external renderers at runtime, and skips only the asset
 types whose tool is missing. Other assets and the deck build continue normally.
 
-There is **no OMML/equation slide type**. Equations are rendered as images and
-placed on a `figure` slide. Native charts stay native (`addChart()`) — do not
-turn a bar/line chart into a picture.
+Native editable equations are available through `scripts/inject_omml.py`
+(pandoc required; see `references/formulas.md`): put `{{MATH:id}}` in slide
+text, then inject OMML after the deck is built. The `latex` asset type below
+renders equations as images for `figure` slides when native math is not
+supported by the target viewer. Native charts stay native (`addChart()`) — do
+not turn a bar/line chart into a picture.
 
 ## Workflow
 
@@ -105,14 +108,15 @@ chrome is added automatically when `"palette": "consulting"`.
 ```bash
 brew install graphviz                        # dot: architecture / call graphs
 npm install -g @mermaid-js/mermaid-cli       # mmdc: flowcharts, sequences, gantt
-brew install pandoc                          # LaTeX math -> LaTeX source
+brew install pandoc                          # LaTeX assets + native OMML (inject_omml.py)
 brew install mactex                          # pdflatex (full TeX distribution)
 brew install poppler                         # pdftocairo / pdftoppm -> PNG/SVG
 ```
 
 Without `mmdc`/`dot`, those assets are skipped with a warning. Without `pandoc`,
-the renderer warns that OMML is unavailable and that **this environment can only
-use images for equations** (数式は画像化のみ); generate the formula elsewhere
-and paste it with a `figure` slide. The same skip happens when a LaTeX engine or
-PDF rasterizer is missing. A failed render command also warns and lets the
-remaining assets continue.
+`render_assets.py` skips `latex` assets with that warning and `inject_omml.py`
+exits 1 with an install hint — native OMML needs pandoc. With pandoc installed
+you can still choose the image path: `latex` assets produce PNGs for `figure`
+slides (数式は画像化も可能). A missing LaTeX engine or PDF rasterizer likewise
+skips image assets. A failed render command also warns and lets the remaining
+assets continue.
