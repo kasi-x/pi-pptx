@@ -2,6 +2,15 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-11-24
+
+### Added
+
+- `references/consulting-q.md` — MBB-grade consulting playbook: TPO classification (exec review / kickoff / pitch / steering / 1on1), consulting-Q minimum bar, storyline-first process, Japanese writing rules, AI-smell catalog, machine-check coverage, TPO quick reference.
+- `references/consulting-layouts.md` — JSON schemas and usage notes for the new consulting slide types.
+- `outline_to_pptx.js`: `consulting` palette (navy/ink + accent red, hairline) and 10 consulting slide types — `exec_summary`, `kpi_row`, `axis_table`, `premise_conclusion`, `issue_action`, `chevron_flow`, `status_heatmap`, `two_by_two`, `bridge` (waterfall), `recommendation` — plus shared kicker/source/page-number chrome.
+- `examples/outline.consulting.sample.json` — 10-slide consulting sample deck.
+
 ## [0.2.0] - 2026-10-15
 
 ### Added

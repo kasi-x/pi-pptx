@@ -19,6 +19,10 @@ Two axes drive most differences:
 
 **Outline (recommendation deck):** 1 cover · 2 executive summary · 3 situation · 4 complication · 5 key question · 6 recommendation · 7–9 MECE arguments + evidence · 10 impact sizing · 11 risks · 12 roadmap (owners/dates) · 13 next 30 days · 14+ appendix [C3][C4].
 
+**Deep dive — consulting-Q.** For MBB-quality or meeting-specific consulting decks, read [consulting-q.md](consulting-q.md).
+It covers the TPO matrix (reader vs listener, decision, density, length, tone), the hard quality bar, storyline-first title lists,
+Japanese writing rules, NG patterns, and what lint vs fresh-eyes review can catch. This file compares genres; that file drives the build.
+
 ## Academic talks (conference / seminar / defense)
 
 **Goal & audience.** A talk is a taster for the work, not the paper. The audience is smart but outside your area; your job is one remembered takeaway [A1].

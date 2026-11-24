@@ -19,6 +19,8 @@ A `.pptx` is a zip archive of XML parts. Every task below is either "emit one wi
 | Content, copy, AI-smell guardrails | `references/content-rules.md` |
 | Full QA pass | `references/qa.md` + `scripts/lint_deck.py` + `scripts/render.sh` |
 | Genre playbooks | `references/deck-types.md` (consulting / academic / product / internal / training) |
+| Consulting-Q slides (executive summary / KPI / matrix / bridge …) | `references/consulting-layouts.md`; outline types + `"palette": "consulting"` → `scripts/outline_to_pptx.js` (sample: `examples/outline.consulting.sample.json`) |
+| MBB-quality / TPO-specific consulting decks | `references/consulting-q.md` (TPO matrix, quality bar, storyline-first titles, Japanese writing, NG patterns) |
 
 Paths are relative to **this skill's directory** (the harness prints it when the skill loads; `scripts/` and `references/` live next to this file). Load only the reference you need.
 
