@@ -21,6 +21,7 @@ A `.pptx` is a zip archive of XML parts. Every task below is either "emit one wi
 | Content, copy, AI-smell guardrails | `references/content-rules.md` |
 | Full QA pass | `references/qa.md` + `scripts/lint_deck.py` + `scripts/render.sh` |
 | Genre playbooks | `references/deck-types.md` (consulting / academic / product / internal / training) |
+| プレゼン技法・LT のコツ（話し方、時間配分、Q&A、リハーサル） | `references/presentation-craft.md` |
 | Consulting-Q slides (executive summary / KPI / matrix / bridge …) | `references/consulting-layouts.md`; outline types + `"palette": "consulting"` → `scripts/outline_to_pptx.js` (sample: `examples/outline.consulting.sample.json`) |
 | 追加レイアウト（全 10 型: timeline / compare / quote / kpi_dashboard / issue_tree / process_steps / metric_callout / agenda / risk_matrix / team_roster） | `references/consulting-layouts.md` §4（全 palette 共通、consulting では chrome 自動付与、サンプル: `examples/outline.layouts.sample.json`） |
 | MBB-quality / TPO-specific consulting decks | `references/consulting-q.md` (TPO matrix, quality bar, storyline-first titles, Japanese writing, NG patterns) |

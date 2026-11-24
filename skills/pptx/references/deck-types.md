@@ -7,6 +7,8 @@ Two axes drive most differences:
 - **Presented vs read.** A talk is performed; a consulting deck is read (circulated, skimmed, opened alone). Read decks need action titles and self-contained slides; presented decks may lean on your voice.
 - **Goal.** Decide → convince → teach → report. A deck that tries to do two of these does neither.
 
+**発表・話し方の技法**（LT の時間設計、ピラミッド原則の話し方、図表の説明、Q&A、リハーサル）は [presentation-craft.md](presentation-craft.md) を参照。このファイルは「どんな資料を作るか」を決めるためのもので、話し方の実務はあちらで扱う。
+
 ## Consulting / strategy decks
 
 **Goal & audience.** Drive a scarce-attention decision-maker to act. Read-first documents: they must stand alone [C2][C3].
